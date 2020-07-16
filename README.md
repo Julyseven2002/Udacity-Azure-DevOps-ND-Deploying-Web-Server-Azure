@@ -53,3 +53,8 @@ To login with SSH:
 Obtain the public IP address of your VM with `az vm show`:
 `az vm show --resource-group myResourceGroup --name myVM -d --query [publicIps] -o tsv`
 Run `ssh <username>@<publicIps>`  to SSH  to  the VM
+
+
+Reference:
+Microsoft Azure website
+https://docs.microsoft.com/en-us/azure
