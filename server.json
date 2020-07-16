@@ -2,10 +2,10 @@
 	"builders": [{
                 "type": "azure-arm",
 
-                "client_id": "384c781a-ebd5-4c51-a791-3ab6ba0a57a2",
-                "client_secret": "h37Ax5eZrLWMNBezU7hEFB5HWE.QHCmYS3",
-                "tenant_id": "a203934d-fab9-48db-ba3d-72971257db2d",
-                "subscription_id": "c738be40-8887-4aa4-9325-c710b3aba4b6",
+                "client_id": "xxxxx",
+                "client_secret": "xxxxx",
+                "tenant_id": "xxxxx",																																			
+                "subscription_id": "xxxxx",
 
 		"managed_image_resource_group_name": "myResourceGroup",
 		"managed_image_name": "udacityNDDeployWebServerPackerImage",
