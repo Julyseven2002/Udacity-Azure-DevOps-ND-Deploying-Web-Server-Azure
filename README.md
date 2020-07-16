@@ -34,7 +34,14 @@ For instructions on how to create and apply policy in Azure, click here: https:/
 3. Run `terraform apply solution.plan` to scans the current directory for the configuration and applies the changes appropriately.
 
 
-
+Note: You can change the property names in packer image and terraform templates. For example , to change the Resource Group name in Terraform, 
+use text editor of your choice like vi to edit the default property value in vars.tf file
+`
+variable "resource_group_name" {
+  description = "The name of the resource group in which the resources are created"
+  default     = "myResourceGroup"
+}
+`
 ### Output
 Once Terraform completes, your VM infrastructure is ready. 
 
