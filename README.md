@@ -24,7 +24,7 @@ For instructions on how to create and apply policy in Azure, click here: https:/
 
 ## Build Packer Template
 1. Change directory to the cloned repository and locate the starter_files sub-directory
-2. Update the tag value in `server.json`
+2. Update the tag,  client_id, client_secret, and subscription_id values in `server.json`
 3. Run `packer build server.json` to create a machine image. Note: This would take few minutes to build
 
 ## Create the Infrastructure using Terraform Template
