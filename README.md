@@ -22,6 +22,9 @@ For this project, you will write a Packer template and a Terraform template to d
 2. Use `az policy assignment list` to verify the tag
 For instructions on how to create and apply policy in Azure, click here: https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources
 
+## Screenshot for `az policy assignment list`
+![alt text](https://github.com/cyril-ui-developer/Deploying-Web-Server-Azure/blob/master/C1%20-%20Azure%20Infrastructure%20Operations/project/starter_files/output%20of%20terraform%20apply.png?raw=true)
+
 ## Build Packer Template
 1. Change directory to the cloned repository and locate the starter_files sub-directory
 2. Update the tag in `server.json`
