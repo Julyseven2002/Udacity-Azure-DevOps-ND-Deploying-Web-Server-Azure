@@ -23,7 +23,7 @@ For this project, you will write a Packer template and a Terraform template to d
 For instructions on how to create and apply policy in Azure, click here: https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources
 
 ## Screenshot for `az policy assignment list`
-![alt text](https://github.com/cyril-ui-developer/Deploying-Web-Server-Azure/blob/master/C1%20-%20Azure%20Infrastructure%20Operations/project/starter_files/output%20of%20terraform%20apply.png?raw=true)
+![alt text](https://github.com/Julyseven2002/Udacity-Azure-DevOps-ND-Deploying-Web-Server-Azure/blob/master/polict-list-screenshot.png?raw=true)
 
 ## Build Packer Template
 1. Change directory to the cloned repository and locate the starter_files sub-directory
@@ -60,5 +60,5 @@ Run `ssh <username>@<publicIps>`  to SSH  to  the VM
 
 
 Reference:
-Microsoft Azure website
+Microsoft Azure website                            
 https://docs.microsoft.com/en-us/azure
