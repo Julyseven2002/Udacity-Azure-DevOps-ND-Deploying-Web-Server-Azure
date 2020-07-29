@@ -1,158 +1,209 @@
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-    # The "feature" block is required for AzureRM provider 2.x. 
-    # If you're using version 1.x, the "features" block is not allowed.
     version = "~>2.0"
     features {}
 }
 
-
+# Provision Resource Group
 resource "azurerm_resource_group" "udacitynd" {
-  name     = var.resource_group_name
-  location = var.location
+ name     = var.resource_gn
+ location = "East US"
 
   tags = {
-    environment = "dev"
-  }
+   environment = "dev"
+   project_name = "Deploying a Web Server in Azure"
+ }
 }
 
+# Provision Virtula Network
 resource "azurerm_virtual_network" "udacitynd" {
-  name                = "udacitynd-vnet"
-  address_space       = ["10.0.0.0/16"]
-  location            = var.location
-  resource_group_name = azurerm_resource_group.udacitynd.name
+ name                = "${var.resource_name_prefix}VirtualNetwork"
+ address_space       = ["10.0.0.0/16"]
+ location            = azurerm_resource_group.udacitynd.location
+ resource_group_name = azurerm_resource_group.udacitynd.name
 
   tags = {
     environment = "dev"
-  }
+    project_name = "Deploying a Web Server in Azure"
+ }
 }
 
+# Provision Subnet
 resource "azurerm_subnet" "udacitynd" {
-  name                 = "udacitynd-subnet"
-  resource_group_name  = azurerm_resource_group.udacitynd.name
-  virtual_network_name = azurerm_virtual_network.udacitynd.name
-  address_prefixes       = ["10.0.2.0/24"]
+ name                 = "${var.resource_name_prefix}Subnet"
+ resource_group_name  = azurerm_resource_group.udacitynd.name
+ virtual_network_name = azurerm_virtual_network.udacitynd.name
+ address_prefixes      = ["10.0.2.0/24"]
 }
 
+# Provision Public IP
 resource "azurerm_public_ip" "udacitynd" {
-  name                         = "udacitynd-public-ip"
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.udacitynd.name
-  allocation_method            = "Static"
-  domain_name_label            = "udacitynddeploywebserver"
+ name                         = "${var.resource_name_prefix}publicIPForLB"
+ location                     = azurerm_resource_group.udacitynd.location
+ resource_group_name          = azurerm_resource_group.udacitynd.name
+ allocation_method            = "Static"
 
   tags = {
     environment = "dev"
-  }
+    project_name = "Deploying a Web Server in Azure"
+ }
 }
-# Add VM scale set
+
+# Provision Load Balanace
 resource "azurerm_lb" "udacitynd" {
-  name                = "udacitynd-lb"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.udacitynd.name
+ name                = "${var.resource_name_prefix}loadBalancer"
+ location            = azurerm_resource_group.udacitynd.location
+ resource_group_name = azurerm_resource_group.udacitynd.name
 
-  frontend_ip_configuration {
-    name                 = "PublicIPAddress"
-    public_ip_address_id = azurerm_public_ip.udacitynd.id
-  }
+ frontend_ip_configuration {
+   name                 = "publicIPAddress"
+   public_ip_address_id = azurerm_public_ip.udacitynd.id
+ }
 
-  tags = {
-    environment = "dev"
-  }
+ tags     = var.tags
 }
 
-resource "azurerm_lb_backend_address_pool" "bpepool" {
-  resource_group_name = azurerm_resource_group.udacitynd.name
-  loadbalancer_id     = azurerm_lb.udacitynd.id
-  name                = "BackEndAddressPool"
+resource "azurerm_lb_backend_address_pool" "udacitynd" {
+ resource_group_name = azurerm_resource_group.udacitynd.name
+ loadbalancer_id     = azurerm_lb.udacitynd.id
+ name                = "${var.resource_name_prefix}BackEndAddressPool"
+
 }
 
-resource "azurerm_lb_probe" "udacitynd" {
-  resource_group_name = azurerm_resource_group.udacitynd.name
-  loadbalancer_id     = azurerm_lb.udacitynd.id
-  name                = "ssh-running-probe"
-  port                = var.application_port
+# Provision Network Security Group
+resource "azurerm_network_security_group" "udacitynd" {
+    name                = "${var.resource_name_prefix}NetworkSecurityGroup"
+    location            = azurerm_resource_group.udacitynd.location
+    resource_group_name = azurerm_resource_group.udacitynd.name
+    
+    security_rule {
+        name                       = "SSH"
+        priority                   = 1001
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "22"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
+  tags     = var.tags
 }
 
-resource "azurerm_lb_rule" "lbnatrule" {
-  resource_group_name            = azurerm_resource_group.udacitynd.name
-  loadbalancer_id                = azurerm_lb.udacitynd.id
-  name                           = "http"
-  protocol                       = "Tcp"
-  frontend_port                  = var.application_port
-  backend_port                   = var.application_port
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.bpepool.id
-  frontend_ip_configuration_name = "PublicIPAddress"
-  probe_id                       = azurerm_lb_probe.udacitynd.id
+# Provision Network Interface Card 
+resource "azurerm_network_interface" "udacitynd" {
+ count               = var.number_instance
+ name                = "${var.resource_name_prefix}NIC_${count.index}"
+ location            = azurerm_resource_group.udacitynd.location
+ resource_group_name = azurerm_resource_group.udacitynd.name
+
+ ip_configuration {
+   name                          = "udacityndConfiguration"
+   subnet_id                     = azurerm_subnet.udacitynd.id
+   private_ip_address_allocation = "dynamic"
+ }
+  tags     = var.tags
 }
 
-data "azurerm_resource_group" "image" {
-  name = "myResourceGroup"
+# Associate  the security group to the network interface card
+resource "azurerm_network_interface_security_group_association" "udacitynd" {
+    count                    = var.number_instance
+    network_interface_id = azurerm_network_interface.udacitynd[count.index].id
+    network_security_group_id = azurerm_network_security_group.udacitynd.id
+
 }
 
+# Provision Mangaed Disk
+resource "azurerm_managed_disk" "udacitynd" {
+ count                = var.number_instance
+ name                 = "${var.resource_name_prefix}DataDiskExisting_${count.index}"
+ location             = azurerm_resource_group.udacitynd.location
+ resource_group_name  = azurerm_resource_group.udacitynd.name
+ storage_account_type = "Standard_LRS"
+ create_option        = "Empty"
+ disk_size_gb         = "1023"
+
+tags     = var.tags
+}
+
+# Provision Availability Set
+resource "azurerm_availability_set" "avset" {
+ name                         = "${var.resource_name_prefix}AvailabilitySet"
+ location                     = azurerm_resource_group.udacitynd.location
+ resource_group_name          = azurerm_resource_group.udacitynd.name
+ platform_fault_domain_count  = 2
+ platform_update_domain_count = 2
+ managed                      = true
+
+ tags     = var.tags
+}
+
+# Packer Image Resource Group
+ data "azurerm_resource_group" "image" {
+  name = "udacityNDResourceGroup"
+}
+
+# Packer Image
 data "azurerm_image" "image" {
   name                = "udacityNDDeployWebServerPackerImage"
   resource_group_name = data.azurerm_resource_group.image.name
 }
 
-resource "azurerm_virtual_machine_scale_set" "udacitynd" {
-  name                = "vmscaleset"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.udacitynd.name
-  upgrade_policy_mode = "Manual"
+# Provision Virtual Machine
+resource "azurerm_virtual_machine" "udacitynd" {
+ count                 = var.number_instance
+ name                  = "${var.resource_name_prefix}VirtualMachine_${count.index}"
+ location              = azurerm_resource_group.udacitynd.location
+ availability_set_id   = azurerm_availability_set.avset.id
+ resource_group_name   = azurerm_resource_group.udacitynd.name
+ network_interface_ids = [element(azurerm_network_interface.udacitynd.*.id, count.index)]
+ vm_size               = "Standard_DS1_v2"
 
-  sku {
-    name     = "Standard_DS1_v2"
-    tier     = "Standard"
-    capacity = 2
-  }
+ # Uncomment this line to delete the OS disk automatically when deleting the VM
+ # delete_os_disk_on_termination = true
 
-  storage_profile_image_reference {
-    id=data.azurerm_image.image.id
-  }
+ # Uncomment this line to delete the data disks automatically when deleting the VM
+ # delete_data_disks_on_termination = true
 
-  storage_profile_os_disk {
-    name              = ""
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-  }
 
-  storage_profile_data_disk {
-    lun          = 0
-    caching        = "ReadWrite"
-    create_option  = "Empty"
-    disk_size_gb   = 10
-  }
+ storage_image_reference {
+   id=data.azurerm_image.image.id
+ }
 
-  os_profile {
-    computer_name_prefix = "vmlab"
-    admin_username       = "azureuser"
-    admin_password       = "Passwword1234"
-  }
+ storage_os_disk {
+   name              = "${var.resource_name_prefix}OSDisk_${count.index}"
+   caching           = "ReadWrite"
+   create_option     = "FromImage"
+   managed_disk_type = "Standard_LRS"
+ }
 
-  os_profile_linux_config {
-    disable_password_authentication = true
+ # Provision Optional Data Disks
+ storage_data_disk {
+   name              = "${var.resource_name_prefix}DataDiskNew_${count.index}"
+   managed_disk_type = "Standard_LRS"
+   create_option     = "Empty"
+   lun               = 0
+   disk_size_gb      = "1023"
+ }
 
-    ssh_keys {
-      path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = file("~/.ssh/id_rsa.pub")
-    }
-  }
+ storage_data_disk {
+   name            = element(azurerm_managed_disk.udacitynd.*.name, count.index)
+   managed_disk_id = element(azurerm_managed_disk.udacitynd.*.id, count.index)
+   create_option   = "Attach"
+   lun             = 1
+   disk_size_gb    = element(azurerm_managed_disk.udacitynd.*.disk_size_gb, count.index)
+ }
 
-  network_profile {
-    name    = "terraformnetworkprofile"
-    primary = true
+ os_profile {
+   computer_name  = "hostname"
+   admin_username = var.admin_uname
+   admin_password = var.admin_pwd
+ }
 
-    ip_configuration {
-      name                                   = "IPConfiguration"
-      subnet_id                              = azurerm_subnet.udacitynd.id
-      load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id]
-      primary = true
-    }
-  }
-  
-  tags = {
-    environment = "dev"
-  }
-}
+ os_profile_linux_config {
+   disable_password_authentication = false
+ }
+
+tags     = var.tags
+}                                                                                                                                                                                           
