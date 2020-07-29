@@ -51,7 +51,7 @@ Once Terraform completes, your VM infrastructure is ready.
 
 Output of `terraform apply solution.plan`
 
-![alt text](https://github.com/cyril-ui-developer/Deploying-Web-Server-Azure/blob/master/C1%20-%20Azure%20Infrastructure%20Operations/project/starter_files/output%20of%20terraform%20apply.png?raw=true)
+![alt text](https://github.com/Julyseven2002/Udacity-Azure-DevOps-ND-Deploying-Web-Server-Azure/blob/master/output-of%20-terraform-%20apply.png?raw=true)
 
 
 
