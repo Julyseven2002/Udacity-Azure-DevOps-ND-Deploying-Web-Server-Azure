@@ -22,7 +22,7 @@ For this project, you will write a Packer template and a Terraform template to d
 2. Use `az policy assignment list` to verify the tag
 For instructions on how to create and apply policy in Azure, click here: https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources
 
-## Screenshot for `az policy assignment list`
+# Screenshot for `az policy assignment list`
 ![alt text](https://github.com/Julyseven2002/Udacity-Azure-DevOps-ND-Deploying-Web-Server-Azure/blob/master/polict-list-screenshot.png?raw=true)
 
 ## Build Packer Template
@@ -31,7 +31,7 @@ For instructions on how to create and apply policy in Azure, click here: https:/
 3. Run `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json` to create a machine image. Enter your subscription_id 
 Note: This would take few minutes to build
 
-### Output
+# Output
 Output of `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json`
 ![alt text](https://github.com/Julyseven2002/Udacity-Azure-DevOps-ND-Deploying-Web-Server-Azure/blob/master/output-of-packer-build.png?raw=true)
 
@@ -52,7 +52,7 @@ variable "resource_group_name" {
   default     = "myResourceGroup"
 }
 `
-### Output
+# Output
 Once Terraform completes, your VM infrastructure is ready. 
 
 Output of `terraform apply solution.plan`
