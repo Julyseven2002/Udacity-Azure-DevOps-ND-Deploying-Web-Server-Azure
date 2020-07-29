@@ -31,6 +31,12 @@ For instructions on how to create and apply policy in Azure, click here: https:/
 3. Run `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json` to create a machine image. Enter your subscription_id 
 Note: This would take few minutes to build
 
+### Output
+Output of `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json`
+![alt text](https://github.com/Julyseven2002/Udacity-Azure-DevOps-ND-Deploying-Web-Server-Azure/blob/master/output-of-packer-build.png?raw=true)
+
+
+
 ## Create the Infrastructure using Terraform Template
 1. Run `terraform init` to initialize  the Terraform environment
 2. Run `terraform  plan -out solution.plan` to review  and validate Terraform template
@@ -52,8 +58,6 @@ Once Terraform completes, your VM infrastructure is ready.
 Output of `terraform apply solution.plan`
 
 ![alt text](https://github.com/Julyseven2002/Udacity-Azure-DevOps-ND-Deploying-Web-Server-Azure/blob/master/output-of%20-terraform-%20apply.png?raw=true)
-
-
 
 
 Reference:
