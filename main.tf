@@ -9,10 +9,7 @@ resource "azurerm_resource_group" "udacitynd" {
  name     = var.resource_gn
  location = "East US"
 
-  tags = {
-   environment = "dev"
-   project_name = "Deploying a Web Server in Azure"
- }
+  tags     = var.tags
 }
 
 # Provision Virtula Network
@@ -22,10 +19,7 @@ resource "azurerm_virtual_network" "udacitynd" {
  location            = azurerm_resource_group.udacitynd.location
  resource_group_name = azurerm_resource_group.udacitynd.name
 
-  tags = {
-    environment = "dev"
-    project_name = "Deploying a Web Server in Azure"
- }
+  tags     = var.tags
 }
 
 # Provision Subnet
@@ -43,13 +37,10 @@ resource "azurerm_public_ip" "udacitynd" {
  resource_group_name          = azurerm_resource_group.udacitynd.name
  allocation_method            = "Static"
 
-  tags = {
-    environment = "dev"
-    project_name = "Deploying a Web Server in Azure"
- }
+  tags     = var.tags
 }
 
-# Provision Load Balanace
+# Provision Load Balanacer
 resource "azurerm_lb" "udacitynd" {
  name                = "${var.resource_name_prefix}loadBalancer"
  location            = azurerm_resource_group.udacitynd.location
@@ -206,4 +197,4 @@ resource "azurerm_virtual_machine" "udacitynd" {
  }
 
 tags     = var.tags
-}                                                                                                                                                                                           
+}
