@@ -79,6 +79,43 @@ resource "azurerm_network_security_group" "udacitynd" {
         destination_address_prefix = "*"
     }
 
+    security_rule {
+        name                       = "Internet"
+        priority                   = 1002
+        direction                  = "Inbound"
+        access                     = "Deny"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "*"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
+    # Alternative solution for deny internet traffic
+    #    security_rule {
+    #     name                       = "Internet_http"
+    #     priority                   = 1003
+    #     direction                  = "Inbound"
+    #     access                     = "Deny"
+    #     protocol                   = "Tcp"
+    #     source_port_range          = "*"
+    #     destination_port_range     = "80"
+    #     source_address_prefix      = "*"
+    #     destination_address_prefix = "*"
+    # }
+    #    security_rule {
+    #     name                       = "Internet_https"
+    #     priority                   = 1004
+    #     direction                  = "Inbound"
+    #     access                     = "Deny"
+    #     protocol                   = "Tcp"
+    #     source_port_range          = "*"
+    #     destination_port_range     = "443"
+    #     source_address_prefix      = "*"
+    #     destination_address_prefix = "*"
+    # }
+    
+
   tags     = var.tags
 }
 
