@@ -29,7 +29,7 @@ For instructions on how to create and apply policy in Azure, click here: https:/
 1. Change directory to the cloned repository and locate the starter_files sub-directory
 2. Update the tag in `server.json`
 3. Create an azure service principal for terraform using the command:
-4. 
+   
    ``` 
     az ad sp create-for-rbac --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"
    ```
