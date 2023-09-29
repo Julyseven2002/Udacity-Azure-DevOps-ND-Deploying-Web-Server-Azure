@@ -28,18 +28,21 @@ For instructions on how to create and apply policy in Azure, click here: https:/
 ## Build Packer Template
 1. Change directory to the cloned repository and locate the starter_files sub-directory
 2. Update the tag in `server.json`
-3. Create an azure service principal for terraform using the command 
-        ` az ad sp create-for-rbac --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"`.
+3. Create an azure service principal for terraform using the command:
+4. 
+   ``` 
+    az ad sp create-for-rbac --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"
+   ```
+   
    You should get an output similar to:
-         ```
+   ```
         {
             "client_id": "xxxxxxxxxxxxxxxxxxxx",
             "client_secret": "xxxxxxxxxxxxxxxxxxx",
             "tenant_id": "xxxxxxxxxxxxxxxxxxxxxxx"
         }
 
-        ```
-        for more information on service principals, use [this link](https://www.terraform.io/docs/providers/azurerm/guides/service_principal_client_secret.html)
+   ```
 
 
 5. Run `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json` to create a machine image. Enter your subscription_id 
