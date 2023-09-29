@@ -45,7 +45,12 @@ For instructions on how to create and apply policy in Azure, click here: https:/
    ```
 
 
-5. Run `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json` to create a machine image. Enter your subscription_id 
+5. Get sub_id:
+   ```
+   az account show --query "{ subscription_id: id }"
+   ```
+   
+7. Run `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json` to create a machine image. Enter your subscription_id 
 Note: This would take few minutes to build
 
 #### Output
