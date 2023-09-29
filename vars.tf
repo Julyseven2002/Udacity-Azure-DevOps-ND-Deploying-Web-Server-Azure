@@ -7,7 +7,7 @@ variable "location" {
 variable "resource_gn" {
   type 	  = string
   description = "The name of the resource group in which the resources are created"
-  default     = "udacityNDResourceGroup"
+  default     = "Azuredevops"
 }
 
 variable "number_instance" {
