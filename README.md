@@ -71,6 +71,11 @@ Output of `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json`
 3. Run `terraform apply solution.plan` to scans the current directory for the configuration and applies the changes appropriately.
 
 
+Note: How fix resource group alreadyb exist error for `terraform apply` cmd:
+```
+terraform import azurerm_resource_group.rg /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1
+```
+
 Note: You can change the property names in packer image and terraform templates. For example , to change the Resource Group name in Terraform, 
 use text editor of your choice like vi to edit the default property value in vars.tf file
 `
