@@ -53,6 +53,11 @@ For instructions on how to create and apply policy in Azure, click here: https:/
 7. Run `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json` to create a machine image. Enter your subscription_id 
 Note: This would take few minutes to build
 
+8. List packer images
+   ```
+    az image list
+   ````
+
 #### Output
 Output of `packer build -var 'azure_subscription_id=xxxxxxxx'  server.json`
 ![alt text](https://github.com/Julyseven2002/Udacity-Azure-DevOps-ND-Deploying-Web-Server-Azure/blob/master/output-of-packer-build.png?raw=true)
